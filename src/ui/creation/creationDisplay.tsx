@@ -4,6 +4,22 @@ import { useContext, useState } from "react";
 import { GameEngineContext } from "../game-engine-context";
 import { UiControllerContext } from "../ui-controller-context";
 import { CreatableType } from "../../game-engine/player/creation/creatableType";
+import { ElementType } from "../../game-engine/player/elements/elementType";
+import { FaFire, FaMountain, FaWind } from "react-icons/fa"
+import { GiWaterDrop } from "react-icons/gi";
+import { ModifierType } from "../../game-engine/player/creation/creatable";
+
+const elementToSymbolMap = {
+  [ElementType.FIRE]: <FaFire style={{marginTop: 5}} color="red" />,
+  [ElementType.AIR]: <FaWind color="green" />,
+  [ElementType.EARTH]: <FaMountain color="brown" />,
+  [ElementType.WATER]: <GiWaterDrop color="blue" />
+}
+
+const modifierTypeToOperatorDisplay = {
+  [ModifierType.ADDITIVE]: "+",
+  [ModifierType.MULTIPLICATIVE]: "x"
+}
 
 export default function CreationDisplay() {
   const uiContext = useContext(UiControllerContext)
@@ -39,12 +55,25 @@ export default function CreationDisplay() {
           }}
         >
           <CardContent sx={{ height: '100%' }}>
-            <Typography variant="h5" component="div">
+            <Stack direction={"row"} spacing={1}>
+              <Stack direction={"column"} spacing={1}>
+              <Typography variant="h5" component="div">
               {creatable.type} - {creatable.level.toString()}
             </Typography>
             <Typography variant="body2" color="text.secondary">
               {creatable.progress.round().toNumber()} / {creatable.getProgressNeededToLevel().toNumber()}
             </Typography>
+              </Stack>
+              <Stack direction={"column"} spacing={1}>
+                {creatable.modifiers.map(modifier => {
+                  return <Stack direction={"row"}>
+                    <Typography>{modifierTypeToOperatorDisplay[modifier.type]}</Typography>
+                    <Typography>{modifier.amountPerLevel.toNumber()}</Typography>
+                    {elementToSymbolMap[modifier.modifiable]}
+                  </Stack>
+                })}
+              </Stack>
+            </Stack>
           </CardContent>
         </CardActionArea>
       </Card>

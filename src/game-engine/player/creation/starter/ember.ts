@@ -14,7 +14,8 @@ export const createEmberCreatable = (data?: SavedCreatableData) => {
         modifiers: [
             {
                 type: ModifierType.ADDITIVE,
-                amountPerLevel: new Decimal(1)
+                amountPerLevel: new Decimal(1),
+                modifiable: ElementType.FIRE
             }
         ],
         level: data ? new Decimal(data.level) : new Decimal(0)

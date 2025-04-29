@@ -2,6 +2,8 @@ import Decimal from "decimal.js";
 import { CreatableType } from "./creatableType";
 import { ElementType } from "../elements/elementType";
 
+export type Modifiable = ElementType
+
 export enum ModifierType {
     ADDITIVE = "ADDITIVE",
     MULTIPLICATIVE = "MULTIPLICATIVE"
@@ -10,6 +12,7 @@ export enum ModifierType {
 export type Modifier = {
     type: ModifierType
     amountPerLevel: Decimal
+    modifiable: Modifiable
 }
 
 export type SavedCreatableData = {
@@ -45,7 +48,8 @@ export default class Creatable {
         this.modifiers = data.modifiers.map(modifier => {
             return {
                 type: modifier.type,
-                amountPerLevel: new Decimal(modifier.amountPerLevel)
+                amountPerLevel: new Decimal(modifier.amountPerLevel),
+                modifiable: modifier.modifiable
             }
         })
         this.level = data.level ? new Decimal(data.level) : new Decimal(0)
