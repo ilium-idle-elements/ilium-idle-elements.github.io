@@ -1,18 +1,16 @@
 import Decimal from "decimal.js";
 import { CreatableType } from "./creatableType";
 import { ElementType } from "../elements/elementType";
+import GameEngine from "../../game-engine";
 
-export type Modifiable = ElementType
-
-export enum ModifierType {
-    ADDITIVE = "ADDITIVE",
-    MULTIPLICATIVE = "MULTIPLICATIVE"
+export type ElementalGain = {
+    type: ElementType
+    amountPerLevel: Decimal
 }
 
-export type Modifier = {
-    type: ModifierType
-    amountPerLevel: Decimal
-    modifiable: Modifiable
+export type ElementalGainMultiplier = {
+    type: ElementType
+    multiplier: Decimal
 }
 
 export type SavedCreatableData = {
@@ -22,42 +20,52 @@ export type SavedCreatableData = {
 
 export type CreatableData = {
     type: CreatableType
+    displayName: string
     difficultyBase: number
     difficultyExponent: number
     elementType: ElementType
     progress?: Decimal
-    modifiers: Modifier[]
+    elementalGains?: ElementalGain[]
+    elementalGainMultipliers?: ElementalGainMultiplier[]
     level?: Decimal
 }
 
 export default class Creatable {
     type: CreatableType
+    displayName: string
     difficultyBase: number
     difficultyExponent: number
     elementType: ElementType
     progress: Decimal
-    modifiers: Modifier[]
+    elementalGains: ElementalGain[]
+    elementalGainMultipliers: ElementalGainMultiplier[]
     level: Decimal
 
     constructor(data: CreatableData) {
         this.type = data.type
+        this.displayName = data.displayName
         this.difficultyBase = data.difficultyBase
         this.difficultyExponent = data.difficultyExponent
         this.elementType = data.elementType
         this.progress = data.progress ? new Decimal(data.progress) : new Decimal(0)
-        this.modifiers = data.modifiers.map(modifier => {
+        this.elementalGains = data.elementalGains ? data.elementalGains.map(elementalGain => {
             return {
-                type: modifier.type,
-                amountPerLevel: new Decimal(modifier.amountPerLevel),
-                modifiable: modifier.modifiable
+                type: elementalGain.type,
+                amountPerLevel: new Decimal(elementalGain.amountPerLevel),
             }
-        })
+        }) : []
+        this.elementalGainMultipliers = data.elementalGainMultipliers ? data.elementalGainMultipliers.map(elementalGainMultiplier => {
+            return {
+                type: elementalGainMultiplier.type,
+                multiplier: new Decimal(elementalGainMultiplier.multiplier),
+            }
+        }) : []
         this.level = data.level ? new Decimal(data.level) : new Decimal(0)
     }
     
-    addProgress(amount: Decimal) {
+    addProgress(amount: Decimal, gameEngine: GameEngine) {
         this.progress = this.progress.plus(amount)
-        this.levelUp()
+        this.levelUp(gameEngine)
     }
 
     getProgressNeededToLevel() {
@@ -68,10 +76,13 @@ export default class Creatable {
         return this.progress.greaterThanOrEqualTo(this.getProgressNeededToLevel())
     }
 
-    levelUp() {
+    levelUp(gameEngine: GameEngine) {
         if (this.canLevelUp()) {
             this.level = this.level.plus(1)
             this.progress = new Decimal(0)
+            this.elementalGains.forEach(elementalGain => {
+                gameEngine.player.addElement(elementalGain.type, elementalGain.amountPerLevel)
+            })
         }
     }
 }

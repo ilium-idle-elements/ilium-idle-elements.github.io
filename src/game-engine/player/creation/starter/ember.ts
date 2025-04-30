@@ -1,21 +1,21 @@
 import Decimal from "decimal.js"
 import { ElementType } from "../../elements/elementType"
-import Creatable, { ModifierType, SavedCreatableData } from "../creatable"
+import Creatable, { SavedCreatableData } from "../creatable"
 import { StarterCreatableTypes } from "./starterCreatableTypes"
 import GameEngine from "../../../game-engine"
 
 export const createEmberCreatable = (data?: SavedCreatableData) => {
     return new Creatable({
         type: StarterCreatableTypes.EMBER,
+        displayName: "Ember",
         difficultyBase: 5,
         difficultyExponent: 1.1,
         elementType: ElementType.FIRE,
         progress: data ? new Decimal(data.progress) : new Decimal(0),
-        modifiers: [
+        elementalGains: [
             {
-                type: ModifierType.ADDITIVE,
-                amountPerLevel: new Decimal(1),
-                modifiable: ElementType.FIRE
+                type: ElementType.FIRE,
+                amountPerLevel: new Decimal(1)
             }
         ],
         level: data ? new Decimal(data.level) : new Decimal(0)

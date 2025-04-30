@@ -7,43 +7,40 @@ import { CreatableType } from "../../game-engine/player/creation/creatableType";
 import { ElementType } from "../../game-engine/player/elements/elementType";
 import { FaFire, FaMountain, FaWind } from "react-icons/fa"
 import { GiWaterDrop } from "react-icons/gi";
-import { ModifierType } from "../../game-engine/player/creation/creatable";
 
-const elementToSymbolMap = {
-  [ElementType.FIRE]: <FaFire style={{marginTop: 5}} color="red" />,
-  [ElementType.AIR]: <FaWind color="green" />,
-  [ElementType.EARTH]: <FaMountain color="brown" />,
-  [ElementType.WATER]: <GiWaterDrop color="blue" />
+const elementToColorMap = {
+  [ElementType.FIRE]: "red",
+  [ElementType.AIR]: "green",
+  [ElementType.EARTH]: "brown",
+  [ElementType.WATER]: "blue"
 }
 
-const modifierTypeToOperatorDisplay = {
-  [ModifierType.ADDITIVE]: "+",
-  [ModifierType.MULTIPLICATIVE]: "x"
+const elementToSymbolMap = {
+  [ElementType.FIRE]: <FaFire color={elementToColorMap[ElementType.FIRE]} />,
+  [ElementType.AIR]: <FaWind color={elementToColorMap[ElementType.AIR]} />,
+  [ElementType.EARTH]: <FaMountain color={elementToColorMap[ElementType.EARTH]} />,
+  [ElementType.WATER]: <GiWaterDrop color={elementToColorMap[ElementType.WATER]} />
 }
 
 export default function CreationDisplay() {
   const uiContext = useContext(UiControllerContext)
   const { gameEngine, updateGameEngine } = useContext(GameEngineContext)
-  const [selectedCard, setSelectedCard] = useState<CreatableType | null>(null)
+  const training = gameEngine.player.training
   const availableCreatableTypes = gameEngine.player.getAvailableCreatables(gameEngine)
-  console.log(availableCreatableTypes)
 
   return <Stack alignItems={"center"} direction={"column"} spacing={1}>
     {Object.values(availableCreatableTypes).map(creatableType => {
         const creatable = gameEngine.player.creatables[creatableType]
-        console.log(creatable)
-        return creatable && <Card>
+        return creatable && <Card key={creatable.type}>
         <CardActionArea
           onClick={() => {
-            if (creatableType === selectedCard) {
+            if (training.includes(creatableType)) {
               gameEngine.player.stopTraining(creatableType)
             } else {
               gameEngine.player.train(creatableType, gameEngine)
             }
-            console.log(gameEngine.player.training)
-            setSelectedCard(creatableType)
           }}
-          data-active={selectedCard === creatableType ? '' : undefined}
+          data-active={training.includes(creatableType) ? '' : undefined}
           sx={{
             height: '100%',
             '&[data-active]': {
@@ -56,20 +53,28 @@ export default function CreationDisplay() {
         >
           <CardContent sx={{ height: '100%' }}>
             <Stack direction={"row"} spacing={1}>
+              <Typography variant="h3" component="div" style={{backgroundColor: elementToColorMap[creatable.elementType], padding: "5px"}}>
+                {creatable.level.toString()}
+              </Typography>
               <Stack direction={"column"} spacing={1}>
-              <Typography variant="h5" component="div">
-              {creatable.type} - {creatable.level.toString()}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              {creatable.progress.round().toNumber()} / {creatable.getProgressNeededToLevel().toNumber()}
-            </Typography>
+                <Typography variant="h6" component="div">
+                  {creatable.displayName}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {creatable.progress.round().toNumber()} / {creatable.getProgressNeededToLevel().toNumber()}
+                </Typography>
               </Stack>
               <Stack direction={"column"} spacing={1}>
-                {creatable.modifiers.map(modifier => {
-                  return <Stack direction={"row"}>
-                    <Typography>{modifierTypeToOperatorDisplay[modifier.type]}</Typography>
-                    <Typography>{modifier.amountPerLevel.toNumber()}</Typography>
-                    {elementToSymbolMap[modifier.modifiable]}
+                {creatable.elementalGains.map(elementalGain => {
+                  return <Stack direction={"row"} style={{alignItems: "center"}} key={elementalGain.type + "-gain"}>
+                    <Typography>+{elementalGain.amountPerLevel.toNumber()}</Typography>
+                    {elementToSymbolMap[elementalGain.type]}
+                  </Stack>
+                })}
+                {creatable.elementalGainMultipliers.map(elementalGainMultiplier => {
+                  return <Stack direction={"row"} style={{alignItems: "center"}} key={elementalGainMultiplier.type + "-multiplier"}>
+                    <Typography>x{elementalGainMultiplier.multiplier.toNumber()}</Typography>
+                    {elementToSymbolMap[elementalGainMultiplier.type]}
                   </Stack>
                 })}
               </Stack>

@@ -3,9 +3,17 @@ import GameEngine from "../game-engine";
 import { AllCreatableProgress, AllCreation, CreatableType } from "./creation/creatableType";
 import Creatable from "./creation/creatable";
 import { StarterCreatableTypes } from "./creation/starter/starterCreatableTypes";
+import { Modifier } from "typescript";
+import Decimal from "decimal.js";
+import { amber } from "@mui/material/colors";
+import { ElementType } from "./elements/elementType";
 
 export type PlayerCreatables = {
   [key in CreatableType]?: Creatable
+}
+
+export type PlayerElements = {
+  [key in ElementType]?: Decimal
 }
 
 const recreateCreatableMap = (creatables: PlayerCreatables) => {
@@ -17,13 +25,48 @@ const recreateCreatableMap = (creatables: PlayerCreatables) => {
   return output
 }
 
+const recreateElementMap = (elements: PlayerElements) => {
+  const output: PlayerElements = {}
+  Object.entries(elements).forEach(([element, amount]) => {
+    output[element as ElementType] = new Decimal(amount)
+  })
+
+  return output
+}
+
 export default class Player {
   creatables: PlayerCreatables
+  elements: PlayerElements
   training: CreatableType[]
 
   constructor(player?: Player) {
     this.creatables = player ? recreateCreatableMap(player.creatables) : {}
+    this.elements = player ? recreateElementMap(player.elements) : {}
     this.training = player ? player.training : []
+  }
+
+  getElementMultiplier(element: ElementType) {
+    let multiplier = new Decimal(1)
+    for (const creatable of Object.values(this.creatables)) {
+      let currentMultiplier = new Decimal(1)
+      for (const elementalMultiplier of creatable.elementalGainMultipliers) {
+        if (elementalMultiplier.type === element) {
+          currentMultiplier = currentMultiplier.plus(elementalMultiplier.multiplier.times(creatable.level).div(100))
+        }
+      }
+      multiplier = multiplier.times(currentMultiplier)
+    }
+
+    return multiplier
+  }
+
+  addElement(element: ElementType, amount: Decimal) {
+    const elementAmount = this.elements[element]
+    if (elementAmount) {
+      this.elements[element] = elementAmount.plus(amount)
+    } else {
+      this.elements[element] = new Decimal(amount)
+    }
   }
 
   getCreatable(creatableType: CreatableType) {
@@ -48,13 +91,13 @@ export default class Player {
       const creatable = this.creatables[creatableType]
       if (creatable) {
         const progressAmount = AllCreatableProgress[creatableType](gameEngine)
-        creatable.addProgress(progressAmount.times(timeModifier))
+        creatable.addProgress(progressAmount.times(timeModifier), gameEngine)
       }
     }
   }
 
   stopTraining(creatableType: CreatableType) {
-    this.training.filter(type => {
+    this.training = this.training.filter(type => {
       return type !== creatableType
     })
   }

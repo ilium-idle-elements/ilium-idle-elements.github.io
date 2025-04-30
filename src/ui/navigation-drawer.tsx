@@ -107,7 +107,7 @@ export function MiniDrawerAppBar() {
           <GiHamburgerMenu />
         </IconButton>
         <Typography variant="h6" noWrap component="div">
-          Battleatro
+          Idle Elemental Trader
         </Typography>
       </Toolbar>
     </AppBar>
