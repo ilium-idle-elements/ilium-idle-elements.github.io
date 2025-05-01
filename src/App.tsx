@@ -1,8 +1,9 @@
 import { Box, CssBaseline, ThemeProvider, createTheme } from '@mui/material';
 import './App.css';
+import CreationAmountsDisplay from './ui/creation/creationAmounts';
+import NavigationButtonsDisplay from './ui/creation/navigationButtonsDisplay';
 import { GameEngineProvider } from './ui/game-engine-context';
 import MainPanel from './ui/main-panel';
-import MiniDrawer, { MiniDrawerAppBar } from './ui/navigation-drawer';
 import { UiControllerProvider } from './ui/ui-controller-context';
 
 const darkTheme = createTheme({ palette: { mode: 'dark' } });
@@ -12,11 +13,11 @@ function App() {
     <GameEngineProvider>
       <UiControllerProvider>
         <ThemeProvider theme={darkTheme}>
-          <Box sx={{ display: 'flex' }}>
-            <CssBaseline />
-            <MiniDrawerAppBar />
-            <MiniDrawer />
-            <MainPanel />
+          <CssBaseline />
+          <MainPanel />
+          <Box style={{ position: "sticky", bottom: 0, backgroundColor: "black" }}>
+            <CreationAmountsDisplay />
+            <NavigationButtonsDisplay />
           </Box>
         </ThemeProvider>
       </UiControllerProvider>

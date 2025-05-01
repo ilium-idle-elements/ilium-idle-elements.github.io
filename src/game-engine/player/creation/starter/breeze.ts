@@ -4,17 +4,17 @@ import Creatable, { SavedCreatableData } from "../creatable"
 import { STARTER_DIFFICULTY_BASE, STARTER_DIFFICULTY_EXPONENT, StarterCreatableTypes } from "./starterCreatableTypes"
 import GameEngine from "../../../game-engine"
 
-export const createEmberCreatable = (data?: SavedCreatableData) => {
+export const createBreezeCreatable = (data?: SavedCreatableData) => {
     return new Creatable({
-        type: StarterCreatableTypes.EMBER,
-        displayName: "Ember",
+        type: StarterCreatableTypes.BREEZE,
+        displayName: "Breeze",
         difficultyBase: STARTER_DIFFICULTY_BASE,
         difficultyExponent: STARTER_DIFFICULTY_EXPONENT,
-        elementType: ElementType.FIRE,
+        elementType: ElementType.AIR,
         progress: data ? new Decimal(data.progress) : new Decimal(0),
         elementalGains: [
             {
-                type: ElementType.FIRE,
+                type: ElementType.AIR,
                 amountPerLevel: new Decimal(1)
             }
         ],
@@ -22,6 +22,6 @@ export const createEmberCreatable = (data?: SavedCreatableData) => {
     })
 }
 
-export const getEmberProgress = (gameEngine: GameEngine) => {
+export const getBreezeProgress = (gameEngine: GameEngine) => {
     return new Decimal(1)
 }

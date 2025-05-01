@@ -1,6 +1,6 @@
 
 import GameEngine from "../game-engine";
-import { AllCreatableProgress, AllCreation, CreatableType } from "./creation/creatableType";
+import { AllCreatableProgress, AllCreatableUnlocks, AllCreation, CreatableType } from "./creation/creatableType";
 import Creatable from "./creation/creatable";
 import { StarterCreatableTypes } from "./creation/starter/starterCreatableTypes";
 import { Modifier } from "typescript";
@@ -80,7 +80,14 @@ export default class Player {
   }
 
   getAvailableCreatables(gameEngine: GameEngine) {
-    return StarterCreatableTypes
+    const availableCreatables: CreatableType[] = Object.values(StarterCreatableTypes)
+    Object.entries(AllCreatableUnlocks).forEach(([elementType, unlockFunction]) => {
+      const typeToAdd = unlockFunction(gameEngine)
+      if (typeToAdd) {
+        availableCreatables.push(typeToAdd as CreatableType)
+      }
+    })
+    return availableCreatables
   }
 
   prestigeReset() {
@@ -91,7 +98,8 @@ export default class Player {
       const creatable = this.creatables[creatableType]
       if (creatable) {
         const progressAmount = AllCreatableProgress[creatableType](gameEngine)
-        creatable.addProgress(progressAmount.times(timeModifier), gameEngine)
+        const elementMultiplier = this.getElementMultiplier(creatable.elementType)
+        creatable.addProgress(progressAmount.times(elementMultiplier).times(timeModifier), gameEngine)
       }
     }
   }
