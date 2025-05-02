@@ -1,4 +1,3 @@
-import Decimal from "decimal.js";
 
 export enum StarterCreatableTypes {
     EMBER = "EMBER",
@@ -7,5 +6,6 @@ export enum StarterCreatableTypes {
     CLAY = "CLAY",
 }
 
-export const STARTER_DIFFICULTY_BASE = 3
-export const STARTER_DIFFICULTY_EXPONENT = 1.1
+export const STARTER_DIFFICULTY_BASE = 2
+export const STARTER_DIFFICULTY_EXPONENT = 1.05
+export const STARTER_PROGRESS = 1

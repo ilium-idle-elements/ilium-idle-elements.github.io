@@ -1,9 +1,9 @@
 import Decimal from "decimal.js"
+import GameEngine from "../../../game-engine"
 import { ElementType } from "../../elements/elementType"
 import Creatable, { SavedCreatableData } from "../creatable"
-import GameEngine from "../../../game-engine"
-import { TIER1_DIFFICULTY_BASE, TIER1_DIFFICULTY_EXPONENT, Tier1CreatableTypes } from "./tier1CreatableTypes"
 import { StarterCreatableTypes } from "../starter/starterCreatableTypes"
+import { TIER1_CREATION_AMOUNT, TIER1_CREATION_MUTIPLIER, TIER1_DIFFICULTY_BASE, TIER1_DIFFICULTY_EXPONENT, Tier1CreatableTypes } from "./tier1CreatableTypes"
 
 export const createGustCreatable = (data?: SavedCreatableData) => {
     return new Creatable({
@@ -16,13 +16,13 @@ export const createGustCreatable = (data?: SavedCreatableData) => {
         elementalGains: [
             {
                 type: ElementType.AIR,
-                amountPerLevel: new Decimal(1)
+                amountPerLevel: new Decimal(TIER1_CREATION_AMOUNT)
             }
         ],
         elementalGainMultipliers: [
             {
                 type: ElementType.AIR,
-                multiplier: new Decimal(5)
+                multiplier: new Decimal(TIER1_CREATION_MUTIPLIER)
             }
         ],
         level: data ? new Decimal(data.level) : new Decimal(0)
