@@ -45,10 +45,13 @@ export default function CreationDisplay() {
   const pageCount = Math.ceil(
     availableCreatableTypes.length / CREATABLES_PER_PAGE
   );
-  const [visibleCreatableTypes, setVisibleCreatableTypes] = useState(
-    availableCreatableTypes.slice(0, CREATABLES_PER_PAGE)
-  );
   const [currentPage, setCurrentPage] = useState(1);
+  const startIndex = (currentPage - 1) * CREATABLES_PER_PAGE;
+  const endIndex = currentPage * CREATABLES_PER_PAGE;
+  const visibleCreatableTypes = availableCreatableTypes.slice(
+    startIndex,
+    endIndex
+  );
 
   return (
     <Container
@@ -84,7 +87,6 @@ export default function CreationDisplay() {
           );
           const clickHandler = () => {
             setCurrentPage(index);
-            setVisibleCreatableTypes(visibleCreatablesForThisPage);
           };
           return (
             <Button
@@ -92,6 +94,7 @@ export default function CreationDisplay() {
               onClick={clickHandler}
               style={{ borderRadius: "8px", marginRight: 5 }}
               size={"small"}
+              key={index}
             >
               {index}
               {training.some((item) =>
@@ -110,7 +113,7 @@ export default function CreationDisplay() {
           flexDirection: "column",
           overflow: "hidden",
           marginTop: "48px",
-          marginBottom: "16px",
+          marginBottom: "116px",
         }}
       >
         <Stack direction={"column"} spacing={1}>
