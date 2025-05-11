@@ -36,7 +36,7 @@ export const getGustProgress = (gameEngine: GameEngine) => {
 export const unlockGust = (gameEngine: GameEngine) => {
     const player = gameEngine.player
     const breezeAmount = player.creatables[StarterCreatableTypes.BREEZE]
-    if (breezeAmount && breezeAmount.level.greaterThanOrEqualTo(15)) {
+    if (breezeAmount && breezeAmount.level.greaterThanOrEqualTo(12)) {
         return Tier1CreatableTypes.GUST
     }
 

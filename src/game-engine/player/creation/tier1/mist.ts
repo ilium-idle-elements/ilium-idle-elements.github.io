@@ -37,8 +37,8 @@ export const unlockMist = (gameEngine: GameEngine) => {
     const player = gameEngine.player
     const dewAmount = player.creatables[StarterCreatableTypes.DEW]
     const breezeAmount = player.creatables[StarterCreatableTypes.BREEZE]
-    if (dewAmount && dewAmount.level.greaterThanOrEqualTo(10) &&
-        breezeAmount && breezeAmount.level.greaterThanOrEqualTo(5)) {
+    if (dewAmount && dewAmount.level.greaterThanOrEqualTo(8) &&
+        breezeAmount && breezeAmount.level.greaterThanOrEqualTo(4)) {
         return Tier1CreatableTypes.MIST
     }
 

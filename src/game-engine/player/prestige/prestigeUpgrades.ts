@@ -1,9 +1,14 @@
-export type PrestigeUpgradeType = {};
+import { ElementType } from "../elements/elementType";
+import { PrestigeUpgradeType } from "./prestigeUpgradeType";
 
 export type PrestigeUpgrade = {
   type: PrestigeUpgradeType;
   name: string;
-  description: string;
   cost: number;
+  levelMultiplier: number;
   max: number;
+  elementalMultipliers?: {
+    type: ElementType;
+    multiplier: number;
+  }[]
 };

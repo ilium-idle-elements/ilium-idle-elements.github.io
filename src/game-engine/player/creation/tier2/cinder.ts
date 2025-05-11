@@ -40,7 +40,7 @@ export const unlockCinder = (gameEngine: GameEngine) => {
   const blazeAmount = player.creatables[Tier1CreatableTypes.BLAZE];
   if (
     emberAmount &&
-    emberAmount.level.greaterThanOrEqualTo(30) &&
+    emberAmount.level.greaterThanOrEqualTo(25) &&
     blazeAmount &&
     blazeAmount.level.greaterThanOrEqualTo(10)
   ) {

@@ -37,8 +37,8 @@ export const unlockMud = (gameEngine: GameEngine) => {
     const player = gameEngine.player
     const clayAmount = player.creatables[StarterCreatableTypes.CLAY]
     const dewAmount = player.creatables[StarterCreatableTypes.DEW]
-    if (clayAmount && clayAmount.level.greaterThanOrEqualTo(10) &&
-        dewAmount && dewAmount.level.greaterThanOrEqualTo(5)) {
+    if (clayAmount && clayAmount.level.greaterThanOrEqualTo(8) &&
+        dewAmount && dewAmount.level.greaterThanOrEqualTo(4)) {
         return Tier1CreatableTypes.MUD
     }
 

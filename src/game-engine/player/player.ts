@@ -1,12 +1,14 @@
 
-import GameEngine from "../game-engine";
-import { AllCreatableProgress, AllCreatableUnlocks, AllCreation, CreatableType } from "./creation/creatableType";
-import Creatable from "./creation/creatable";
-import { StarterCreatableTypes } from "./creation/starter/starterCreatableTypes";
-import { Modifier } from "typescript";
 import Decimal from "decimal.js";
-import { amber } from "@mui/material/colors";
+import GameEngine from "../game-engine";
+import Creatable from "./creation/creatable";
+import { AllCreatableProgress, AllCreatableUnlocks, AllCreation, CreatableType } from "./creation/creatableType";
+import { StarterCreatableTypes } from "./creation/starter/starterCreatableTypes";
 import { ElementType } from "./elements/elementType";
+import { AllPrestigeUpgrades } from "./prestige/allPrestigeUpgrades";
+import { Contracts } from "./prestige/contracts";
+import Prestige from "./prestige/prestige";
+import { PrestigeUpgradeType } from "./prestige/prestigeUpgradeType";
 
 export type PlayerCreatables = {
   [key in CreatableType]?: Creatable
@@ -38,11 +40,15 @@ export default class Player {
   creatables: PlayerCreatables
   elements: PlayerElements
   training: CreatableType[]
+  contracts: Contracts
+  prestige: Prestige
 
   constructor(player?: Player) {
     this.creatables = player ? recreateCreatableMap(player.creatables) : {}
     this.elements = player ? recreateElementMap(player.elements) : {}
     this.training = player ? player.training : []
+    this.contracts = player ? new Contracts(player.contracts) : new Contracts()
+    this.prestige = player ? new Prestige(player.prestige) : new Prestige()
   }
 
   getElementMultiplier(element: ElementType) {
@@ -57,6 +63,19 @@ export default class Player {
       multiplier = multiplier.times(currentMultiplier)
     }
 
+    for (const [prestigeUpgradeType, level] of Object.entries(this.prestige.upgrades)) {
+      const prestigeUpgrade = AllPrestigeUpgrades[prestigeUpgradeType as PrestigeUpgradeType]
+      let prestigeMultiplier = new Decimal(1)
+      if (prestigeUpgrade.elementalMultipliers) {
+        for (const prestigeElementalMultiplier of prestigeUpgrade.elementalMultipliers) {
+          if (prestigeElementalMultiplier.type === element) {
+            prestigeMultiplier = prestigeMultiplier.plus(prestigeElementalMultiplier.multiplier * level)
+          }
+        }
+      }
+      multiplier = multiplier.times(prestigeMultiplier)
+    }
+
     return multiplier
   }
 
@@ -66,6 +85,13 @@ export default class Player {
       this.elements[element] = elementAmount.plus(amount)
     } else {
       this.elements[element] = new Decimal(amount)
+    }
+  }
+
+  removeElement(element: ElementType, amount: Decimal) {
+    const elementAmount = this.elements[element]
+    if (elementAmount && elementAmount.greaterThanOrEqualTo(amount)) {
+      this.elements[element] = elementAmount.minus(amount)
     }
   }
 
@@ -91,6 +117,10 @@ export default class Player {
   }
 
   prestigeReset() {
+    this.creatables = {}
+    this.elements = {}
+    this.training = []
+    this.contracts = new Contracts()
   }
 
   gainProgress(timeModifier: number, gameEngine: GameEngine) {

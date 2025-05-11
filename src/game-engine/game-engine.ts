@@ -40,4 +40,5 @@ function performGameLoop(gameEngine: GameEngine) {
     gameEngine.player.addNewCreatable(creationType)
   })
   gameEngine.player.gainProgress(1, gameEngine)
+  gameEngine.player.contracts.completeContract(gameEngine)
 }

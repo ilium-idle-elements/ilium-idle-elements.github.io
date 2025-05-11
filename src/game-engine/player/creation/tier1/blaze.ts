@@ -37,8 +37,8 @@ export const unlockBlaze = (gameEngine: GameEngine) => {
     const player = gameEngine.player
     const emberAmount = player.creatables[StarterCreatableTypes.EMBER]
     const breezeAmount = player.creatables[StarterCreatableTypes.BREEZE]
-    if (emberAmount && emberAmount.level.greaterThanOrEqualTo(10) &&
-        breezeAmount && breezeAmount.level.greaterThanOrEqualTo(5)) {
+    if (emberAmount && emberAmount.level.greaterThanOrEqualTo(8) &&
+        breezeAmount && breezeAmount.level.greaterThanOrEqualTo(4)) {
         return Tier1CreatableTypes.BLAZE
     }
 

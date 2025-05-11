@@ -3,6 +3,7 @@ import { useContext } from "react";
 import { GiMetalBar, GiUpgrade } from "react-icons/gi";
 import { MdSettings } from "react-icons/md";
 import { GameEngineContext } from "../game-engine-context";
+import { prestigeUnlocked } from "../helpers";
 import { DISPLAY_CONTENT, UiControllerContext } from "../ui-controller-context";
 
 export default function NavigationButtonsDisplay() {
@@ -23,9 +24,9 @@ export default function NavigationButtonsDisplay() {
             <ToggleButton value={DISPLAY_CONTENT.CREATION}>
                 <GiMetalBar />
             </ToggleButton>
-            <ToggleButton value={DISPLAY_CONTENT.PRESTIGE}>
+            {prestigeUnlocked(gameEngine) && <ToggleButton value={DISPLAY_CONTENT.PRESTIGE}>
                 <GiUpgrade />
-            </ToggleButton>
+            </ToggleButton>}
             <ToggleButton value={DISPLAY_CONTENT.SETTINGS}>
                 <MdSettings />
             </ToggleButton>

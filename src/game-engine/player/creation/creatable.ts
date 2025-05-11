@@ -1,7 +1,7 @@
 import Decimal from "decimal.js";
-import { CreatableType } from "./creatableType";
-import { ElementType } from "../elements/elementType";
 import GameEngine from "../../game-engine";
+import { ElementType } from "../elements/elementType";
+import { CreatableType } from "./creatableType";
 
 export type ElementalGain = {
     type: ElementType
@@ -62,14 +62,16 @@ export default class Creatable {
         }) : []
         this.level = data.level ? new Decimal(data.level) : new Decimal(0)
     }
-    
+
     addProgress(amount: Decimal, gameEngine: GameEngine) {
         this.progress = this.progress.plus(amount)
-        this.levelUp(gameEngine)
+        while (this.levelUp(gameEngine)) { }
     }
 
     getProgressNeededToLevel() {
-        return new Decimal(this.level.plus(1).times(this.difficultyBase)).toPower(this.difficultyExponent).round()
+        const scalingIncrease = this.level.div(100).plus(1)
+        const exponentialScaling = scalingIncrease.times(this.difficultyExponent)
+        return new Decimal(this.difficultyBase).times(this.level.plus(1)).toPower(exponentialScaling).round()
     }
 
     canLevelUp() {
@@ -78,11 +80,14 @@ export default class Creatable {
 
     levelUp(gameEngine: GameEngine) {
         if (this.canLevelUp()) {
+            this.progress = this.progress.minus(this.getProgressNeededToLevel())
             this.level = this.level.plus(1)
-            this.progress = new Decimal(0)
             this.elementalGains.forEach(elementalGain => {
                 gameEngine.player.addElement(elementalGain.type, elementalGain.amountPerLevel)
             })
+            return true
         }
+
+        return false
     }
 }

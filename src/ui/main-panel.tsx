@@ -1,6 +1,7 @@
 import { Box } from "@mui/material";
 import { useContext } from "react";
 import CreationDisplay from "./creation/creationDisplay";
+import PrestigeDisplay from "./creation/prestigeDisplay";
 import SettingsDisplay from "./settings-display";
 import { DISPLAY_CONTENT, UiControllerContext } from "./ui-controller-context";
 
@@ -14,6 +15,9 @@ export default function MainPanel() {
       )}
       {uiContext.selectedContent === DISPLAY_CONTENT.SETTINGS && (
         <SettingsDisplay />
+      )}
+      {uiContext.selectedContent === DISPLAY_CONTENT.PRESTIGE && (
+        <PrestigeDisplay />
       )}
     </Box>
   );

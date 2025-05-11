@@ -36,7 +36,7 @@ export const getGaleProgress = (gameEngine: GameEngine) => {
 export const unlockGale = (gameEngine: GameEngine) => {
   const player = gameEngine.player;
   const breezeAmount = player.creatables[StarterCreatableTypes.BREEZE];
-  if (breezeAmount && breezeAmount.level.greaterThanOrEqualTo(40)) {
+  if (breezeAmount && breezeAmount.level.greaterThanOrEqualTo(30)) {
     return Tier2CreatableTypes.GALE;
   }
 

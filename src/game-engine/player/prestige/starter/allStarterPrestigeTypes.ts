@@ -1,0 +1,8 @@
+
+export enum AllStarterPrestigeTypes {
+    ALL_ELEMENTAL_BOOST = "ALL_ELEMENTAL_BOOST",
+    FIRE_BOOST = "FIRE_BOOST",
+    WATER_BOOST = "WATER_BOOST",
+    AIR_BOOST = "AIR_BOOST",
+    EARTH_BOOST = "EARTH_BOOST",
+}
